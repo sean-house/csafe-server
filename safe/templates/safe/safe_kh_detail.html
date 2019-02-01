@@ -1,0 +1,165 @@
+{% extends 'safe/safe_base.html' %}
+  {% block body_block %}
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="navbar-brand" href="{% url 'safe:index' %}">CSAFE</a></li>
+             </ul>
+        </div>
+        <div class="mx-auto order-0">
+            <a class="navbar-brand mx-auto" href="{% url 'safe:index' %}">CSAFE User:
+                {{ user.username }}</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="
+                        {% url 'safe:user_logout' %}">Logout</a></li>
+                <li class="nav-item"><a class="nav-link" href="
+                        {% url 'admin:index' %}">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+      <br><br>
+  <div class="container">
+  {% if user == safe.keyholder %}
+        <div class="jumbotron">
+          <h1>{{ safe.safeholder.userattributes.displayname }}'s safe details</h1>
+        </div>
+          <p>These are the parameters of your safe holder's safe</p>
+            {% if safe.auth_to_unlock is True %}
+                <div class="alert alert-danger" role="alert">This safe is authorised to unlock</div>
+            {% else %}
+                <div class="alert alert-success" role="alert">This safe is not authorised to
+                    unlock</div>
+            {% endif %}
+          <h2>Lock status</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                      <th scope="col">Bolt</th>
+                      <th scope="col">Hinge switch</th>
+                      <th scope="col">Lid switch</th>
+                    </tr>
+                </thead>
+                  <tbody>
+                    <tr>
+                      <td>{% if safe.bolt_engaged == True %}Engaged
+                        {% else %}Open{% endif %}</td>
+                        <td>{% if safe.hinge_closed == True %}Closed
+                        {% else %}Open{% endif %}</td>
+                        <td>{% if safe.lid_closed == True %}Closed
+                        {% else %}Open{% endif %}</td>
+                    </tr>
+                  </tbody>
+            </table>
+            <p>Time the safe last submitted an update: {{ safe.last_update }}</p>
+            <h2>Recent events</h2>
+            <p class="font-weight-light">Scroll the box to see more</p>
+            {% if events %}
+                  <div style="height:150px; overflow-y: scroll;" class="alert alert-info" role="alert">
+                  <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Time</th>
+                          <th scope="col">Event</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for event in events %}
+                        <tr>
+                          <td>{{ event.timestamp }}</td>
+                          <td>{{ event.event }}</td>
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+                  </table>
+                  </div>
+            {% else %}
+                <p>There are no events to show</p>
+            {% endif %}
+
+            <h2>Current safe parameters </h2>
+            <p class="font-weight-light">(click the button below to change these)</p>
+            <table class="table">
+                <thead>
+                    <tr>
+                      <th scope="col">Scan Frequency</th>
+                      <th scope="col">Reporting Frequency</th>
+                      <th scope="col">Proximity units</th>
+                      <th scope="col">Proximity unit display</th>
+                    </tr>
+                </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{ safe.scanfreq }} seconds</td>
+                        <td>{{ safe.reportfreq }} scan periods<br>That is, every
+                            {{ safe.scanfreq }} * {{ safe.reportfreq }} seconds</td>
+                        <td>{% if safe.proximityunit == 'M' %}Minutes
+                            {% elif safe.proximityunit == 'H' %}Hours
+                            {% elif safe.proximityunit == 'D' %}Days
+                            {% else %}Weeks{% endif %}</td>
+                        <td>{{ safe.displayproximity|yesno|title }}</td>
+                    </tr>
+                  </tbody>
+            </table>
+            <h2>Messages</h2>
+            <div class="row">
+                <div class="col-sm">
+                    <div class="card text-white bg-primary">
+                      <div class="card-body">
+                        <h5 class="card-title">Message from {{ safe.safeholder.userattributes.displayname }}</h5>
+                        <h6 class="card-subtitle mb-2">On {{ safe.safeholder_msg_timestamp }}</h6>
+                        <p class="card-text">{{ safe.safeholder_msg|linebreaksbr }}</p>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="card">
+                      <div class="card-body">
+                        <h5 class="card-title">Your message to
+                            {{ safe.safeholder.userattributes.displayname }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">On {{ safe.keyholder_msg_timestamp }}</h6>
+                        <p class="card-text">{{ safe.keyholder_msg|linebreaksbr }}</p>
+                          <a class="btn btn-warning" href="
+                        {% url 'safe:kh_message' pk=safe.pk %}">Update parameters and message</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="card bg-light">
+                      <div class="card-body">
+                        <h5 class="card-title">Parameters explained</h5>
+                          <p class="card-text"><strong>Scan frequency:</strong>  The interval, in seconds,
+                            between
+                            successive scans by the safe of its status. Set in the region 60 seconds
+                            to 600 seconds.  If the unlock time occurs within this period the safe
+                            will permit itself to be unlocked at the following scan.
+                        </p>
+                        <p class="card-text"><strong>Report frequency:</strong>  The number of scan intervals
+                            that pass before the safe reports its status to the server and gets new
+                            settings (if any). Set a low number while you and your safe holder are
+                            getting acquainted - then extend it later.
+                        </p>
+                        <p class="card-text"><strong>Proximity unit:</strong>  If you wish, the
+                            lights on your safe holder's safe can display the proximity to unlock
+                            time. Up to five units can be indicated by five red lights. Here you
+                            chose whether those units are Minutes, Hours, Days or Weeks.
+                        </p>
+                        <p class="card-text"><strong>Display proximity:</strong>  Of course, you
+                            could also choose not to display a proximity at all.  Set this to 'No'
+                            and no lights will be displayed until the unlock time has arived.
+                        </p>
+
+                      </div>
+                    </div>
+                </div>
+            </div>
+  {% else %}
+      <div class="jumbotron">
+          <h1>You are not the authorised to view this safe!</h1>
+      </div>
+  {% endif %}
+  </div>
+{% endblock %}

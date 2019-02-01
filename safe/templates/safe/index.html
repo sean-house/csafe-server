@@ -1,0 +1,40 @@
+{% extends "safe/safe_base.html" %}
+
+  {% block body_block %}
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="navbar-brand" href="#">CSAFE</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'safe:keyholder' %}">Keyholder</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'safe:safeholder' %}">Safeholder</a></li>
+             </ul>
+        </div>
+        <div class="mx-auto order-0">
+            <a class="navbar-brand mx-auto" href="{% url 'safe:index' %}">CSAFE User</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+            <ul class="navbar-nav ml-auto">
+                {# Some logic on what to display for last item#}
+                {% if user.is_authenticated %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'safe:user_logout' %}">Logout</a></li>
+	            {% else %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'safe:register' %}">Register</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'safe:user_login' %}">Login</a></li>
+	            {% endif %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">Admin</a></li>
+            </ul>
+        </div>
+        </nav>
+      <br><br>
+      <div class="container">
+          <div class="jumbotron">
+              <h1>This is the CSAFE Main page</h1>
+              <p>The place for Keyholders and Safeholders to manage their relationship</p>
+              <h3>Choose an option from the menu above</h3>
+          </div>
+          <h2>Here is your injected content: {{ injectme }}</h2>
+      </div>
+   {% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'safe/safe_base.html' %}
+  {% block body_block %}
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="navbar-brand" href="#">CSAFE</a></li>
+                    safe</a></li>
+             </ul>
+        </div>
+        <div class="mx-auto order-0">
+            <a class="navbar-brand mx-auto" href="{% url 'safe:index' %}">CSAFE User</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="
+                        {% url 'safe:user_logout' %}">Logout</a></li>
+                <li class="nav-item"><a class="nav-link" href="
+                        {% url 'admin:index' %}">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+      <br><br>
+  <div class="container">
+    <div class="jumbotron">
+      <h1>You are now a Key Holder!</h1>
+          {% if user.is_authenticated %}
+            <h2>Welcome {{ user.username }}!</h2>
+            {% else %}
+            <h2>This page should not be visible unless you are logged in!</h2>
+            {% endif %}
+    </div>
+  </div>
+{% endblock %}

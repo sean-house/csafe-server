@@ -1,0 +1,86 @@
+{% extends 'safe/safe_base.html' %}
+  {% block body_block %}
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="navbar-brand" href="{% url 'safe:index' %}">CSAFE</a></li>
+             </ul>
+        </div>
+        <div class="mx-auto order-0">
+            <a class="navbar-brand mx-auto" href="{% url 'safe:index' %}">CSAFE User:
+                {{ user.username }}</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="
+                        {% url 'safe:user_logout' %}">Logout</a></li>
+                <li class="nav-item"><a class="nav-link" href="
+                        {% url 'admin:index' %}">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+      <br><br>
+  <div class="container">
+  {% if user == safe.safeholder %}
+    <div class="jumbotron">
+      <h1>Safe details</h1>
+    </div>
+        These are the parameters of your safe - pay heed to the KeyHolder message!
+        <p>Hardware id: {{ safe.hardware_id }}</p>
+        <p>Lock status</p>
+        <table class="table">
+            <thead>
+                <tr>
+                  <th scope="col">Bolt</th>
+                  <th scope="col">Hinge switch</th>
+                  <th scope="col">Lid switch</th>
+                </tr>
+            </thead>
+              <tbody>
+                <tr>
+                  <td>{% if safe.bolt_engaged == True %}Engaged
+                    {% else %}Open{% endif %}</td>
+                    <td>{% if safe.hinge_closed == True %}Closed
+                    {% else %}Open{% endif %}</td>
+                    <td>{% if safe.lid_closed == True %}Closed
+                    {% else %}Open{% endif %}</td>
+                </tr>
+              </tbody>
+        </table>
+        <p>Lasted updated: {{ safe.last_update }}</p>
+        <p>Your displayname: {{ safe.safeholder.userattributes.displayname }}</p>
+        {% if safe.keyholder %}
+        <div class="card w-95">
+          <div class="card-body">
+            <h5 class="card-title">Message from {{ safe.keyholder.userattributes.displayname }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">On {{ safe.keyholder_msg_timestamp }}</h6>
+            <p class="card-text">{{ safe.keyholder_msg|linebreaksbr }}</p>
+          </div>
+        </div>
+        <br><br>
+        <div class="card w-95">
+          <div class="card-body">
+            <h5 class="card-title">Your message to
+                {{ safe.keyholder.userattributes.displayname }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">On {{ safe.safeholder_msg_timestamp }}</h6>
+            <p class="card-text">{{ safe.safeholder_msg|linebreaksbr }}</p>
+          </div>
+        </div>
+        <div>
+            <p><a class="btn btn-warning" href="
+                {% url 'safe:sh_message' pk=safe.pk %}">Update message for
+                {{ safe.keyholder.userattributes.displayname }}</a></p>
+        </div>
+        {% else %}
+            <p>You have no Key Holder at this time</p>
+        {% endif %}
+  {% else %}
+      <div class="jumbotron">
+          <h1>You are not the authorised to view this safe!</h1>
+      </div>
+  {% endif %}
+  </div>
+{% endblock %}

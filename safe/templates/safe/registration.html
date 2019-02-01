@@ -1,0 +1,54 @@
+{% extends "safe/safe_base.html" %}
+{% load staticfiles %}
+
+{% block body_block %}
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="navbar-brand" href="{{ url safe:index
+                        }}">CSAFE</a></li>
+             </ul>
+        </div>
+        <div class="mx-auto order-0">
+            <a class="navbar-brand mx-auto" href="{% url 'safe:index' %}">CSAFE User</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+            <ul class="navbar-nav ml-auto">
+                {# Some logic on what to display for last item#}
+                {% if user.is_authenticated %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'safe:user_logout' %}">Logout</a></li>
+	            {% else %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'safe:register' %}">Register</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'safe:user_login' %}">Login</a></li>
+	            {% endif %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+      <br><br>
+
+  <div class="container">
+    <div class="jumbotron">
+      {% if registered %}
+        <h1>Thank you for registering!</h1>
+      {% else %}
+        <h1>Register Here</h1>
+        <h3>Just fill out the form.</h3>
+
+        <form enctype="multipart/form-data" method="POST">
+          {% csrf_token %}
+          {{ user_form.as_p }}
+          {{ attribute_form.as_p }}
+          <input type="submit" name="" value="Register">
+        </form>
+
+      {% endif %}
+
+    </div>
+
+  </div>
+
+{% endblock %}

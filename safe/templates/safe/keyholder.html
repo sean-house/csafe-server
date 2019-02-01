@@ -1,0 +1,63 @@
+{% extends 'safe/safe_base.html' %}
+  {% block body_block %}
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="navbar-brand" href="{% url 'safe:index' %}">CSAFE</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'safe:kh_claim_safe' %}">Claim
+                    safeholder</a></li>
+             </ul>
+        </div>
+        <div class="mx-auto order-0">
+            <a class="navbar-brand mx-auto" href="{% url 'safe:index' %}">CSAFE User:
+                {{ user.username }}</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="
+                        {% url 'safe:user_logout' %}">Logout</a></li>
+                <li class="nav-item"><a class="nav-link" href="
+                        {% url 'admin:index' %}">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+      <br><br>
+  <div class="container">
+    <div class="jumbotron">
+      <h1>Keyholder page</h1>
+    </div>
+        {% if safe_list %}
+        These are the Safeholders for whom you are holding keys:
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Safeholder Displayname</th>
+                  <th scope="col">Safe</th>
+                  <th scope="col">Active?</th>
+                  <th scope="col">Last updated</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for safe in safe_list %}
+                <tr>
+                  <th scope="row"><a class="btn btn-primary" href="{{safe.hardware_id}}/">View
+                      {{ safe.safeholder.userattributes.displayname }}'s safe</a><br>
+                       <a class="btn btn-primary" href="
+                        {% url 'safe:kh_release' pk=safe.pk %}">Release
+                        {{ safe.safeholder.userattributes.displayname }}</a></th>
+                  <td>{{ safe|linebreaksbr }}</td>
+                  <td>{{ safe.relationship_active }}</td>
+                  <td>{{ safe.last_update }}</td>
+                </tr>
+            {% endfor %}
+              </tbody>
+            </table>
+        {% else %}
+            <p>You do not yet appear to be holding keys for any safeholder. Perhaps you need to
+                'claim' a Safeholder first? Click the link at the top if so.</p>
+        {% endif %}
+  </div>
+{% endblock %}
