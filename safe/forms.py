@@ -19,21 +19,28 @@ class UserAttributeForm(forms.ModelForm):
 
 
 class SafeUpdateForm(forms.ModelForm):
-    PROXIMITY_CHOICES = [
-        ('M', 'Minutes'),
-        ('H', 'Hours'),
-        ('D', 'Days'),
-        ('W', 'Weeks')
-    ]
-    auth_to_unlock = forms.BooleanField()
-    unlock_time = forms.DateTimeInput(attrs={'class': 'datetime-input'})
-    scanfreq = forms.IntegerField()
-    reportfreq = forms.IntegerField
-    proximityunit = forms.ChoiceField(choices=PROXIMITY_CHOICES)
-    displayproximity = forms.BooleanField()
-    keyholder_msg = forms.TextInput()
+    # PROXIMITY_CHOICES = [
+    #     ('M', 'Minutes'),
+    #     ('H', 'Hours'),
+    #     ('D', 'Days'),
+    #     ('W', 'Weeks')
+    # ]
+    # auth_to_unlock = forms.BooleanField(required=False)
+    # unlock_time = forms.DateTimeInput(attrs={'class': 'datetime-input'})
+    # scanfreq = forms.IntegerField()
+    # reportfreq = forms.IntegerField
+    # proximityunit = forms.ChoiceField(choices=PROXIMITY_CHOICES)
+    # displayproximity = forms.BooleanField(required=False)
+    # keyholder_msg = forms.TextInput()
+
 
     class Meta():
         model = Safe
+        DATEPICKER = {
+            'type': 'text',
+            'class': 'form-control',
+            'id': 'datetime-input'
+        }
         fields = ('auth_to_unlock', 'unlock_time', 'scanfreq', 'reportfreq', 'proximityunit',
                   'displayproximity', 'keyholder_msg')
+        widgets = {'unlock_time': forms.DateTimeInput(attrs=DATEPICKER)}

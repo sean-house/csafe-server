@@ -22,7 +22,7 @@
         </div>
     </nav>
       <br><br>
-  <div class="container">
+  <div class="container input-group date" data-provide="datepicker">>
     <div class="jumbotron">
       <h1>Update safe</h1>
     </div>
@@ -34,13 +34,13 @@
         </form>
       <p>These parameters will be sent to the safe the next time it reports its status (acording
           to the "Report Frequency" previously set.</p>
-  </div>
-{% endblock %}
-<script>
-    $(function () {
-        $('.datetime-input').datetimepicker({
-            format:'YYYY-MM-DD HH:mm:ss'
+      <script type="text/javascript">
+        $(function () {
+            $('.datetime-input').datetimepicker({
+                format:'YYYY-MM-DD HH:mm:ss'
+            });
         });
-    });
-</script>
+      </script>
+  </div>
+  {% endblock %}
 </html>

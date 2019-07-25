@@ -26,7 +26,10 @@ SECRET_KEY = 'g*1ctn=di8dtkf3am-267_6)+*2x7%5od&=vo1)qpko_7)5pbx'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.3',]
+ALLOWED_HOSTS = ['192.168.0.3',
+                '192.168.0.3',
+                '127.0.0.1',
+                 'csafe.azurewebsites.net']
 
 
 # Application definition
@@ -38,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrap4',
+    'moment',
     'safe',
     'api'
 ]
@@ -76,23 +81,38 @@ WSGI_APPLICATION = 'csafe.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'csafe_db',
-            'USER': 'csafe_admin',
-            'PASSWORD': 'bekweq-4wIhke-kaxxiq',
-            'HOST': 'csafe-db.c2huzlmsbmq6.eu-west-1.rds.amazonaws.com',
-            'PORT': '3306',
-        }
-}
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+# if 'RDS_HOSTNAME' in os.environ:
+#     print('Setting up for AWS MySQL')
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.mysql',
+#             'NAME': os.environ['RDS_DB_NAME'],
+#             'USER': os.environ['RDS_USERNAME'],
+#             'PASSWORD': os.environ['RDS_PASSWORD'],
+#             'HOST': os.environ['RDS_HOSTNAME'],
+#             'PORT': os.environ['RDS_PORT'],
+#         }
 #     }
-#}
+if 'AZURE_HOSTNAME' in os.environ:
+    print('Setting up for Microsoft Azure SQL database')
+    DATABASES = {
+        'default': {
+            'ENGINE': 'sql_server.pyodbc',
+            'NAME': os.environ['AZURE_DB_NAME'],
+            'USER': os.environ['AZURE_USERNAME'],
+            'PASSWORD': os.environ['AZURE_PASSWORD'],
+            'HOST': os.environ['AZURE_HOSTNAME'],
+            'PORT': os.environ['AZURE_PORT'],
+        }
+    }
+else:
+    print('No environment variables for MYSQL - defaulting to sqlite')
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 
 # Password validation

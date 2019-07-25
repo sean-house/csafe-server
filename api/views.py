@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
+from django.utils import timezone
 
 import datetime
 
@@ -26,7 +27,9 @@ def register(request):
                 safe = Safe(
                     hardware_id=parms['hwid'],
                     safe_public_key=parms['pkey'],
-                    last_update= now
+                    last_update=now,
+                    unlock_time=now,
+                    auth_to_unlock=True
                 )
                 created = True
             if created:
@@ -74,11 +77,14 @@ def checkin(request):
         if len(status_parts) == 6:
             safe.last_update = status_parts[2]
             if status_parts[3] == 'True':
-                safe.bolt_engaged = True
-            if status_parts[4] == 'True':
                 safe.hinge_closed = True
-            if status_parts[5] == 'True':
+            if status_parts[4] == 'True':
                 safe.lid_closed = True
+            if status_parts[5] == 'True':
+                safe.bolt_engaged = True
+            # Now check if there are any time-based updates to make
+            if safe.unlock_time < now:
+                safe.auth_to_unlock = True
             safe.save()
             if len(message_lines) > 1:
                 # Add entries to Safe events database
