@@ -1,3 +1,4 @@
+from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
@@ -30,14 +31,12 @@ class Crypto():
             format=serialization.PublicFormat.SubjectPublicKeyInfo)
         return
 
-
     def pub_key(self):
         """
         Return the public key
         :return: bytes
         """
         return self.public_key_pem
-
 
     def decrypt(self, msg: str, sig: str, pkey: str) -> Tuple[bool, str]:
         """
@@ -82,9 +81,9 @@ class Crypto():
             signature_valid = False
 
         if signature_valid:
-            return (signature_valid, str(plaintext.decode('utf-8')))
+            return signature_valid, str(plaintext.decode('utf-8'))
         else:
-            return (signature_valid, '')
+            return signature_valid, ''
 
     def encrypt(self, msg: str, safe_pkey: str) -> Tuple[str, str]:
         """
