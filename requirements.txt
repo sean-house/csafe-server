@@ -9,8 +9,6 @@ Django==2.1.7
 django-bootstrap4==0.0.7
 django-pyodbc-azure==2.1.0.0
 django-staticfiles-moment==2.0.0
-ibm-db==2.0.9
-ibm-db-django==1.2.0.0
 pycparser==2.19
 PyMySQL==0.9.3
 pyodbc==4.0.26
