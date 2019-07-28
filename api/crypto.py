@@ -21,7 +21,7 @@ class Crypto:
         if 'CSAFE_KEY' in os.environ and 'CSAFE_KPWD' in os.environ:
             self.private_key = serialization.load_pem_private_key(
                         data=(os.environ['CSAFE_KEY'] + '\n').encode('utf-8'),
-                        password=os.environ['CSAFE_KPWD'].encode('utf-8'),
+                        password=b'secure server passphrase',
                         backend=default_backend()
                     )
             print("Server's secure key")

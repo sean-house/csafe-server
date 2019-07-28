@@ -81,18 +81,6 @@ WSGI_APPLICATION = 'csafe.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-# if 'RDS_HOSTNAME' in os.environ:
-#     print('Setting up for AWS MySQL')
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.mysql',
-#             'NAME': os.environ['RDS_DB_NAME'],
-#             'USER': os.environ['RDS_USERNAME'],
-#             'PASSWORD': os.environ['RDS_PASSWORD'],
-#             'HOST': os.environ['RDS_HOSTNAME'],
-#             'PORT': os.environ['RDS_PORT'],
-#         }
-#     }
 if 'AZURE_HOSTNAME' in os.environ:
     print('Setting up for Microsoft Azure SQL database')
     DATABASES = {
