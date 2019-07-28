@@ -11,20 +11,31 @@ import base64
 from typing import Tuple
 
 
-class Crypto():
+class Crypto:
     def __init__(self):
         """
         Initialise the class - load the private key from file
         """
         print('Initialising Crypto object')
         # Load server keys
-        server_keydir = 'keys/'
-        with open(os.path.join(server_keydir, 'private_key.pem'), "rb") as key_file:
+        if 'CSAFE_KEY' in os.environ and 'CSAFE_KPWD' in os.environ:
             self.private_key = serialization.load_pem_private_key(
-                key_file.read(),
-                password=b'secure server passphrase',
-                backend=default_backend()
-            )
+                        data=(os.environ['CSAFE_KEY'] + '\n').encode('utf-8'),
+                        password=os.environ['CSAFE_KPWD'].encode('utf-8'),
+                        backend=default_backend()
+                    )
+            print("Server's secure key")
+        else:
+            print("Server secure key not in environment variables")
+
+
+        # server_keydir = 'keys/'
+        # with open(os.path.join(server_keydir, 'private_key.pem'), "rb") as key_file:
+        #     self.private_key = serialization.load_pem_private_key(
+        #         data=key_file.read(),
+        #         password=b'secure server passphrase',
+        #         backend=default_backend()
+        #     )
         self.public_key = self.private_key.public_key()
         self.public_key_pem = self.public_key.public_bytes(
             encoding=serialization.Encoding.PEM,
@@ -116,4 +127,4 @@ class Crypto():
             ))
         server_message_enc_64 = base64.urlsafe_b64encode(server_message_enc)
 
-        return (server_message_enc_64, server_message_sig_64)
+        return server_message_enc_64, server_message_sig_64
