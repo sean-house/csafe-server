@@ -91,6 +91,10 @@ if 'AZURE_HOSTNAME' in os.environ:
             'PASSWORD': os.environ['AZURE_PASSWORD'],
             'HOST': os.environ['AZURE_HOSTNAME'],
             'PORT': os.environ['AZURE_PORT'],
+            'OPTIONS': {
+                'driver': 'ODBC Driver 17 for SQL Server',
+                'unicode_results': True,
+            },
         }
     }
 else:
