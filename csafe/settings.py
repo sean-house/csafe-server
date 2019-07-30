@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 
+# Set production intent.  If True then set setting for deployment in Azure
+PRODUCTION_INTENT = True
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'safe/templates')
@@ -24,7 +28,10 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, 'safe/templates')
 SECRET_KEY = 'g*1ctn=di8dtkf3am-267_6)+*2x7%5od&=vo1)qpko_7)5pbx'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if PRODUCTION_INTENT:
+    DEBUG = False
+else:
+    DEBUG = True
 
 ALLOWED_HOSTS = ['192.168.0.3',
                 '192.168.0.3',
@@ -90,13 +97,13 @@ if 'AZURE_HOSTNAME' in os.environ:
             'USER': os.environ['AZURE_USERNAME'],
             'PASSWORD': os.environ['AZURE_PASSWORD'],
             'HOST': os.environ['AZURE_HOSTNAME'],
-            'PORT': os.environ['AZURE_PORT'],
-            'OPTIONS': {
-                'driver': 'ODBC Driver 17 for SQL Server',
-                'unicode_results': True,
+            'PORT': os.environ['AZURE_PORT']
             },
         }
-    }
+    if PRODUCTION_INTENT:
+        DATABASES['OPTIONS'] = {
+                'driver': 'ODBC Driver 17 for SQL Server',
+                'unicode_results': True}
 else:
     print('No environment variables for MYSQL - defaulting to sqlite')
     DATABASES = {
