@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 
 # Set production intent.  If True then set setting for deployment in Azure
-PRODUCTION_INTENT = False
+PRODUCTION_INTENT = True
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
