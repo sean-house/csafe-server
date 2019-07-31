@@ -101,9 +101,11 @@ if 'AZURE_HOSTNAME' in os.environ:
             },
         }
     if PRODUCTION_INTENT:
-        DATABASES['OPTIONS'] = {
+        DATABASES['default']['OPTIONS'] = {
                 'driver': 'ODBC Driver 17 for SQL Server',
-                'unicode_results': True}
+                'unicode_results': True,
+                'connection_retries': 10,
+                'connection_retry_backoff_time': 5}
 else:
     print('No environment variables for MYSQL - defaulting to sqlite')
     DATABASES = {
