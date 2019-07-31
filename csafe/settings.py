@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 
 # Set production intent.  If True then set setting for deployment in Azure
-PRODUCTION_INTENT = True
+PRODUCTION_INTENT = False
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -29,7 +29,7 @@ SECRET_KEY = 'g*1ctn=di8dtkf3am-267_6)+*2x7%5od&=vo1)qpko_7)5pbx'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 if PRODUCTION_INTENT:
-    DEBUG = False
+    DEBUG = True
 else:
     DEBUG = True
 
