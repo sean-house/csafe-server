@@ -24,7 +24,7 @@ class Crypto:
                         password=b'secure server passphrase',
                         backend=default_backend()
                     )
-            print("Server's secure key")
+            print("Server's secure key obtained from environment")
         else:
             print("Server secure key not in environment variables")
 

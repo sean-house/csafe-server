@@ -12,8 +12,15 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 
-# Set production intent.  If True then set setting for deployment in Azure
-PRODUCTION_INTENT = True
+# Check environment variable CSAFE_INTENT:
+# If PRODUCTION then set up for production use
+# If DEV then set up for development use
+# If PROD_TEST then set up for production but leave DEBUG = True
+if 'CSAFE_INTENT' in os.environ:
+    INTENT = os.environ['CSAFE_INTENT']
+    print(f"PRODUCTION_INTENT = {INTENT}")
+else:
+    print('"CSAFE_INTENT not in environment variables - STOPPING')
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -28,8 +35,8 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, 'safe/templates')
 SECRET_KEY = 'g*1ctn=di8dtkf3am-267_6)+*2x7%5od&=vo1)qpko_7)5pbx'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if PRODUCTION_INTENT:
-    DEBUG = True
+if INTENT == 'PRODUCTION':
+    DEBUG = False
 else:
     DEBUG = True
 
@@ -97,15 +104,25 @@ if 'AZURE_HOSTNAME' in os.environ:
             'USER': os.environ['AZURE_USERNAME'],
             'PASSWORD': os.environ['AZURE_PASSWORD'],
             'HOST': os.environ['AZURE_HOSTNAME'],
-            'PORT': os.environ['AZURE_PORT']
+            'PORT': os.environ['AZURE_PORT'],
             },
         }
-    if PRODUCTION_INTENT:
+    if INTENT.startswith('PROD'):
         DATABASES['default']['OPTIONS'] = {
-                'driver': 'ODBC Driver 17 for SQL Server',
-                'unicode_results': True,
-                'connection_retries': 10,
-                'connection_retry_backoff_time': 5}
+            'driver': 'ODBC Driver 17 for SQL Server',
+            'unicode_results': True,
+            'connection_retries': 10,
+            'connection_retry_backoff_time': 8
+        }
+        print('Setting database access to use ODBC DRIVER 17 (for AZURE')
+    else:
+        DATABASES['default']['OPTIONS'] = {
+            'unicode_results': True,
+            'connection_retries': 10,
+            'connection_retry_backoff_time': 8
+        }
+        print('Allowing database drivers to default to ODBC Driver 13')
+
 else:
     print('No environment variables for MYSQL - defaulting to sqlite')
     DATABASES = {
