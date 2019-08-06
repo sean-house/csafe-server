@@ -111,14 +111,14 @@ if 'AZURE_HOSTNAME' in os.environ:
         DATABASES['default']['OPTIONS'] = {
             'driver': 'ODBC Driver 17 for SQL Server',
             'unicode_results': True,
-            'connection_retries': 10,
+            'connection_retries': 15,
             'connection_retry_backoff_time': 8
         }
         print('Setting database access to use ODBC DRIVER 17 (for AZURE')
     else:
         DATABASES['default']['OPTIONS'] = {
             'unicode_results': True,
-            'connection_retries': 10,
+            'connection_retries': 15,
             'connection_retry_backoff_time': 8
         }
         print('Allowing database drivers to default to ODBC Driver 13')

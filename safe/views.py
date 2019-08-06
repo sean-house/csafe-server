@@ -6,13 +6,14 @@ from django.utils.decorators import method_decorator
 from safe import models
 from safe.forms import UserForm, UserAttributeForm, SafeUpdateForm
 
-
 # Extra Imports for the Login and Logout Capabilities
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
+# Generic python modules
+import uuid
 
 # Create your views here.
 from safe.models import Safe, UserAttributes, Safe_Event
@@ -23,9 +24,9 @@ class IndexView(TemplateView):
     # template_name = 'app_name/site.html'
     template_name = 'safe/index.html'
 
-    def get_context_data(self,**kwargs):
-        context  = super().get_context_data(**kwargs)
-        #context['injectme'] = "Basic Injection!"
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # context['injectme'] = "Basic Injection!"
         return context
 
 
@@ -57,7 +58,6 @@ def user_logout(request):
 
 
 def register(request):
-
     registered = False
 
     if request.method == 'POST':
@@ -102,7 +102,7 @@ def register(request):
 
         else:
             # One of the forms was invalid if this else gets called.
-            print(user_form.errors,attribute_form.errors)
+            print(user_form.errors, attribute_form.errors)
 
     else:
         # Was not an HTTP post so we just render the forms as blank.
@@ -111,14 +111,15 @@ def register(request):
 
     # This is the render and context dictionary to feed
     # back to the registration.html file page.
-    return render(request,'safe/registration.html',
-                          {'user_form':user_form,
-                           'attribute_form':attribute_form,
-                           'registered':registered})
+    return render(request, 'safe/registration.html',
+                  {
+                      'user_form': user_form,
+                      'attribute_form': attribute_form,
+                      'registered': registered
+                  })
 
 
 def user_login(request):
-
     if request.method == 'POST':
         # First get the username and password supplied
         username = request.POST.get('username')
@@ -129,10 +130,10 @@ def user_login(request):
 
         # If we have a user
         if user:
-            #Check it the account is active
+            # Check it the account is active
             if user.is_active:
                 # Log the user in.
-                login(request,user)
+                login(request, user)
                 # Send the user back to some page.
                 return HttpResponseRedirect(reverse('safe:index'))
             else:
@@ -140,11 +141,11 @@ def user_login(request):
                 return HttpResponse("Your account is not active.")
         else:
             print("Someone tried to login and failed.")
-            print("They used username: {} and password: {}".format(username,password))
+            print("They used username: {} and password: {}".format(username, password))
             return HttpResponse("Invalid login details supplied.")
 
     else:
-        #Nothing has been provided for username or password.
+        # Nothing has been provided for username or password.
         return render(request, 'safe/login.html', {})
 
 
@@ -153,7 +154,8 @@ class SafeListView(ListView):
     context_object_name = 'safe_list'
     model = models.Safe
     template_name = 'safe/safeholder.html'
-    #queryset = Safe.objects.filter(safeholder=request.user)
+
+    # queryset = Safe.objects.filter(safeholder=request.user)
 
     def get_queryset(self):
         return Safe.objects.filter(safeholder=self.request.user)
@@ -211,12 +213,12 @@ class KH_ClaimSafeView(ListView):
     def get_queryset(self):
         return Safe.objects.filter(keyholder=None).exclude(safeholder=None)
 
+
 @method_decorator(login_required, name='dispatch')
 class SH_SafeUpdateView(UpdateView):
     fields = ('safeholder_msg',)
     model = models.Safe
     template_name = 'safe/sh_update_form.html'
-
 
     def form_valid(self, form):
         form.instance.safeholder_msg_timestamp = timezone.now()
@@ -239,10 +241,9 @@ class SafeKHDetailView(DetailView):
         return context
 
 
-
 @method_decorator(login_required, name='dispatch')
 class KH_SafeUpdateView(UpdateView):
-    #fields = ('auth_to_unlock', 'unlock_time', 'scanfreq', 'reportfreq', 'proximityunit',
+    # fields = ('auth_to_unlock', 'unlock_time', 'scanfreq', 'reportfreq', 'proximityunit',
     #          'displayproximity', 'keyholder_msg',)
     model = models.Safe
     form_class = SafeUpdateForm
@@ -258,6 +259,7 @@ class KH_SafeUpdateView(UpdateView):
         form.instance.keyholder_msg_timestamp = timezone.now()
         return super().form_valid(form)
 
+
 @login_required
 def kh_confirm_safe(request, pk):
     print(request.user, pk)
@@ -272,8 +274,9 @@ def sh_confirm_safe(request, pk):
     print(request.user, pk)
     safe = Safe.objects.get(hardware_id=pk)
     safe.safeholder = request.user
+    safe.safeholder_key = str(uuid.uuid4())
     safe.save()
-    return render(request, 'safe/sh_confirm.html')
+    return render(request, 'safe/sh_confirm.html', {'safe': safe})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -282,7 +285,7 @@ class SafeKHReleaseView(DetailView):
     model = models.Safe
     template_name = 'safe/safe_kh_release.html'
 
-    # Use this methid to execute the release of the safeholder
+    # Use this method to execute the release of the safeholder
     def get_context_data(self, **kwargs):
         data = super(SafeKHReleaseView, self).get_context_data(**kwargs)
         self.object.keyholder = None
@@ -292,6 +295,3 @@ class SafeKHReleaseView(DetailView):
         self.object.unlock_time = timezone.now()
         self.object.save()
         return data
-
-
-

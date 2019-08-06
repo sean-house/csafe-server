@@ -25,12 +25,22 @@
       <br><br>
   <div class="container">
     <div class="jumbotron">
-      <h1>You are now a Safe Holder!</h1>
-          {% if user.is_authenticated %}
-            <h2>Welcome {{ user.username }}!</h2>
+        {% if user.is_authenticated %}
+        <h1>Congratulations {{ user.username }}, You are now a SafeHolder!</h1>
+            <h2>Your SafeHolder's key</h2>
+            <p>Your SafeHolder's key is important.  You must give this to any potential KeyHolder to permit them to
+                take control of your safe.
+                <br>They will need to quote this key to claim <b>you</b> as their SafeHolder!</p>
+            {% if safe %}
+            <p>Safeholder's key = {{ safe.safeholder_key }}</p>
             {% else %}
-            <h2>This page should not be visible unless you are logged in!</h2>
+            <p>No safe details have been provided!</p>
             {% endif %}
+            <p>The key serves no other purpose. You cannot use it to unlock your own safe</p>
+
+        {% else %}
+        <h1>This page should not be visible unless you are logged in!</h1>
+        {% endif %}
     </div>
   </div>
 {% endblock %}

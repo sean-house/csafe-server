@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 
+
 # Create your models here.
 
 class Safe(models.Model):
@@ -12,9 +13,9 @@ class Safe(models.Model):
         ('W', 'Weeks')
     ]
     hardware_id = models.CharField(max_length=64, primary_key=True)
-    bolt_engaged = models.BooleanField(default = False)
-    hinge_closed = models.BooleanField(default = False)
-    lid_closed = models.BooleanField(default = False)
+    bolt_engaged = models.BooleanField(default=False)
+    hinge_closed = models.BooleanField(default=False)
+    lid_closed = models.BooleanField(default=False)
     safeholder = models.ForeignKey(User, on_delete=models.CASCADE, null=True,
                                    related_name='sh_safes')
     last_update = models.DateTimeField(verbose_name='Last update from safe')
@@ -39,7 +40,7 @@ class Safe(models.Model):
     safeholder_msg_timestamp = models.DateTimeField(null=True, blank=True)
     relationship_active = models.BooleanField(default=True,
                                               verbose_name='Is the relationship active')
-
+    safeholder_key = models.CharField(default='NONE', max_length=36, verbose_name="Safeholder's key")
 
     def __str__(self):
         if self.safeholder is None:
@@ -47,11 +48,10 @@ class Safe(models.Model):
         else:
             sh = self.safeholder.userattributes.displayname
         if all([self.bolt_engaged, self.hinge_closed, self.lid_closed]):
-            st='SECURE'
+            st = 'SECURE'
         else:
-            st='OPEN'
-        return 'Safe: {}, \nOwner = {}, Status = {}'.format(self.hardware_id, sh, st)
-
+            st = 'OPEN'
+        return f" \nOwner = {sh}, Status = {st}, Safe id: {self.hardware_id},"
 
     def get_absolute_url(self):
         return reverse("safe:sh_detail", kwargs={'pk': self.pk})
@@ -88,8 +88,3 @@ class UserAttributes(models.Model):
 
     def __str__(self):
         return self.user.username
-
-
-
-
-

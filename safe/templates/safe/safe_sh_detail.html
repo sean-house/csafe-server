@@ -28,8 +28,13 @@
     <div class="jumbotron">
       <h1>Safe details</h1>
     </div>
-        These are the parameters of your safe - pay heed to the KeyHolder message!
-        <p>Hardware id: {{ safe.hardware_id }}</p>
+        These are the parameters of your safe.<br>
+        {% if safe.keyholder %}
+        <p>Pay heed to the KeyHolder's message below</p>
+        {% else %}
+        <p>Safeholder's key: <b>{{ safe.safeholder_key }}</b><br>
+            Cut and paste this key into a message to a potential KeyHolder</p>
+        {% endif %}
         <p>Lock status</p>
         <table class="table">
             <thead>
@@ -51,6 +56,7 @@
               </tbody>
         </table>
         <p>Lasted updated: {{ safe.last_update }}</p>
+        <p>Hardware id: {{ safe.hardware_id }}</p>
         <p>Your displayname: {{ safe.safeholder.userattributes.displayname }}</p>
         {% if safe.keyholder %}
         <div class="card w-95">
@@ -75,7 +81,8 @@
                 {{ safe.keyholder.userattributes.displayname }}</a></p>
         </div>
         {% else %}
-            <p>You have no Key Holder at this time</p>
+        <br>
+        <p><b>You have no Key Holder at this time</b></p>
         {% endif %}
   {% else %}
       <div class="jumbotron">
