@@ -42,7 +42,7 @@
               {% for safe in safe_list %}
                 <tr>
                   <th><a class="btn btn-primary" href="
-                {% url 'safe:kh_confirm' pk=safe.pk %}">Claim
+                {% url 'safe:kh_challenge' pk=safe.pk %}">Claim
                 {{ safe.safeholder.userattributes.displayname }}'s safe</a></th>
                   <td>{{ safe }}</td>
                   <td>{{ safe.last_update }}</td>

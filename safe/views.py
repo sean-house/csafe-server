@@ -148,7 +148,6 @@ def user_login(request):
         # Nothing has been provided for username or password.
         return render(request, 'safe/login.html', {})
 
-
 @method_decorator(login_required, name='dispatch')
 class SafeListView(ListView):
     context_object_name = 'safe_list'
@@ -166,22 +165,6 @@ class SafeSHDetailView(DetailView):
     context_object_name = 'safe'
     model = models.Safe
     template_name = 'safe/safe_sh_detail.html'
-
-    # def get_context_data(self, **kwargs):
-    #     # Add details from related models
-    #     context = super(SafeDetailView, self).get_context_data(**kwargs)
-    #     sh_displayname = self.request.user.userattributes.displayname
-    #     context['sh_displayname'] = sh_displayname
-    #     # Get KH attribute data
-    #     kh =
-    #     kh = models.Relationship.objects.get(safeholder=self.request.user.pk)
-    #     kh_user = models.User.objects.get(username=kh.keyholder)
-    #     kh_displayname = kh_user.userattributes.displayname
-    #     context['kh_displayname'] = kh_displayname
-    #     # Get KH message
-    #     context['kh_message'] = kh.keyholder_msg
-    #     context['kh_message_timestamp'] = kh.keyholder_msg_timestamp
-    #     return context
 
 
 @method_decorator(login_required, name='dispatch')
@@ -261,12 +244,51 @@ class KH_SafeUpdateView(UpdateView):
 
 
 @login_required
+def kh_challenge(request, pk):
+    """
+    Check the potential KeyHolder has supplied the correct SafeHolder's key
+    :param request:
+    :return:
+    """
+    safe = Safe.objects.get(hardware_id=pk)
+    if request.method == 'POST':
+        # First get the username and password supplied
+        safeholder_key = request.POST.get('sh_key')
+        print(f"Obtained submitted Safeholder's key of {safeholder_key}")
+
+
+        # If we have a user
+        if safeholder_key:
+            # Check it the correct key
+            if safeholder_key == safe.safeholder_key:
+                print("The correct key has been presented")
+                # Confirm the Keyholder
+                safe.keyholder = request.user
+                safe.save()
+                return render(request, 'safe/kh_confirm.html', {'safe': safe})
+            else:
+                # If key is incorrect:
+                return render(request, 'safe/kh_deny.html')
+        else:
+            print("Invalid SafeHolder's key supplied.")
+            return HttpResponse("Invalid SafeHolder's key supplied.")
+
+    else:
+        # Nothing has been provided for username or password.
+        return render(request, 'safe/kh_challenge.html', {'safe': safe})
+
+
+@login_required
 def kh_confirm_safe(request, pk):
     print(request.user, pk)
-    safe = Safe.objects.get(hardware_id=pk)
-    safe.keyholder = request.user
-    safe.save()
+
     return render(request, 'safe/kh_confirm.html')
+
+
+@login_required
+def kh_deny_safe(request, pk):
+
+    return render(request, 'safe/kh_deny.html')
 
 
 @login_required

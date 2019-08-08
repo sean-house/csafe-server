@@ -16,7 +16,9 @@ urlpatterns = [
     path('sh_claim_safe/', views.SH_ClaimSafeView.as_view(), name='sh_claim_safe'),
     path('sh_claim_safe/<pk>/', views.sh_confirm_safe, name='sh_confirm'),
     path('kh_claim_sh/', views.KH_ClaimSafeView.as_view(), name='kh_claim_safe'),
+    path('kh_challenge/<pk>/', views.kh_challenge, name='kh_challenge'),
     path('kh_claim_sh/<pk>/', views.kh_confirm_safe, name='kh_confirm'),
+    path('kh_deny/<pk>/', views.kh_deny_safe, name='kh_deny'),
     path('kh_release_sh/<pk>/', views.SafeKHReleaseView.as_view(), name='kh_release'),
     path('',views.IndexView.as_view(), name='index'),
 ]

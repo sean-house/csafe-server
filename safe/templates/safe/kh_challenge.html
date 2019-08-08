@@ -26,13 +26,20 @@
       <br><br>
   <div class="container">
     <div class="jumbotron">
-      <h1>You are now {{ safe.safeholder.userattributes.displayname }}'s Key Holder!</h1>
+      <h1>Just one final step!</h1>
           {% if user.is_authenticated %}
-            <h2>Congratulations {{ user.username }}!</h2>
-            <p>Please do not abuse your power!</p>
-            <br><br>
-            <p>Click on the 'Keyholder' menu above to review the safes you control - and to interact with your
-                SafeHolders</p>
+            <h2>{{ user.username }} - before you can be a KeyHolder you must provide the SafeHolder's key <br>
+                to confirm that you have been authorised by the SafeHolder</h2>
+            <p>Please supply this key below</p>
+
+          <form method="post" action="{% url 'safe:kh_challenge' pk=safe.pk %}">
+          {% csrf_token %}
+          {# Creating the Safeholder's key form #}
+          <label for="sh_key">SafeHolder's Key:</label>
+          <input type="text" name="sh_key" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+          <input type="submit" name="" value="Submit">
+
+        </form>
             {% else %}
             <h2>This page should not be visible unless you are logged in!</h2>
             {% endif %}

@@ -4,7 +4,6 @@
         <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item"><a class="navbar-brand" href="#">CSAFE</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'safe:keyholder' %}">Keyholder</a></li>
                     safe</a></li>
              </ul>
         </div>
@@ -26,16 +25,13 @@
       <br><br>
   <div class="container">
     <div class="jumbotron">
-      <h1>You are now {{ safe.safeholder.userattributes.displayname }}'s Key Holder!</h1>
+      <h1>That is not the right key!</h1>
           {% if user.is_authenticated %}
-            <h2>Congratulations {{ user.username }}!</h2>
-            <p>Please do not abuse your power!</p>
-            <br><br>
-            <p>Click on the 'Keyholder' menu above to review the safes you control - and to interact with your
-                SafeHolders</p>
-            {% else %}
+            <h2>Please click the back button to try again - or confirm with the SafeHolder <br>
+                that they have given you the correct key.</h2>
+          {% else %}
             <h2>This page should not be visible unless you are logged in!</h2>
-            {% endif %}
+          {% endif %}
     </div>
   </div>
 {% endblock %}
