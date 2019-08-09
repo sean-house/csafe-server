@@ -1,4 +1,5 @@
 {% extends "safe/safe_base.html" %}
+{% load static %}
 
   {% block body_block %}
       <nav class="navbar navbar-expand-md navbar-dark bg-dark">
@@ -28,8 +29,8 @@
             </ul>
         </div>
         </nav>
-      <br><br>
       <div class="container">
+          <img class="img-fluid" src='{% static "safe/CSAFE_Banner.png" %}' width="100%">
           <div class="jumbotron">
               <h1>This is the CSAFE Main page</h1>
               <p>The place for Keyholders and Safeholders to manage their relationship</p>
