@@ -179,7 +179,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
+if INTENT in ['PRODUCTION', 'PROD_TEST']:
+    STATIC_ROOT = '/home/site/wwwroot/csafe/static'
+else:
+    STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
 
 STATIC_URL = '/static/'
 LOGIN_URL = '/safe/login/'
