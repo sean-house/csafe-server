@@ -25,6 +25,7 @@ else:
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+print(f"BASE_DIR = {BASE_DIR}")
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'safe/templates')
 
 
@@ -40,10 +41,9 @@ if INTENT == 'PRODUCTION':
 else:
     DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.3',
-                '192.168.0.3',
+ALLOWED_HOSTS = ['192.168.0.*',
                 '127.0.0.1',
-                 'csafe.azurewebsites.net']
+                'localhost',]
 
 
 # Application definition
@@ -56,7 +56,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrap4',
-    'moment',
     'safe',
     'api'
 ]
@@ -95,34 +94,18 @@ WSGI_APPLICATION = 'csafe.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-if 'AZURE_HOSTNAME' in os.environ:
-    print('Setting up for Microsoft Azure SQL database')
+if INTENT == 'DEV':
+    print("Environment is dev.  Setting up for postgres database")
     DATABASES = {
         'default': {
-            'ENGINE': 'sql_server.pyodbc',
-            'NAME': os.environ['AZURE_DB_NAME'],
-            'USER': os.environ['AZURE_USERNAME'],
-            'PASSWORD': os.environ['AZURE_PASSWORD'],
-            'HOST': os.environ['AZURE_HOSTNAME'],
-            'PORT': os.environ['AZURE_PORT'],
-            },
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'django',
+            'USER': 'sean',
+            'PASSWORD': 'sean',
+            'HOST': 'iMac.local',
+            'PORT': '5432',
         }
-    if INTENT.startswith('PROD'):
-        DATABASES['default']['OPTIONS'] = {
-            'driver': 'ODBC Driver 17 for SQL Server',
-            'unicode_results': True,
-            'connection_retries': 15,
-            'connection_retry_backoff_time': 8
-        }
-        print('Setting database access to use ODBC DRIVER 17 (for AZURE')
-    else:
-        DATABASES['default']['OPTIONS'] = {
-            'unicode_results': True,
-            'connection_retries': 15,
-            'connection_retry_backoff_time': 8
-        }
-        print('Allowing database drivers to default to ODBC Driver 13')
-
+    }
 else:
     print('No environment variables for MYSQL - defaulting to sqlite')
     DATABASES = {
@@ -178,11 +161,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
-PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
-if INTENT in ['PRODUCTION', 'PROD_TEST']:
-    STATIC_ROOT = '/home/site/wwwroot/csafe/static'
-else:
-    STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
+#PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+# if INTENT in ['PRODUCTION', 'PROD_TEST']:
+#     STATIC_ROOT = '/home/site/wwwroot/csafe'
+# else:
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+print(f"STATIC_ROOT = {STATIC_ROOT}")
+STATICFILES_DIRS = [
+    '/csafe-server/static/',
+]
 
 STATIC_URL = '/static/'
 LOGIN_URL = '/safe/login/'
