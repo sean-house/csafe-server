@@ -19,9 +19,11 @@ class Crypto:
         print('Initialising Crypto object')
         # Load server keys
         if 'CSAFE_KEY' in os.environ and 'CSAFE_KPWD' in os.environ:
+            key = '\n'.join(os.environ['CSAFE_KEY'].split('\\n')) + '\n'
+            pw = os.environ['CSAFE_KPWD']
             self.private_key = serialization.load_pem_private_key(
-                        data=(os.environ['CSAFE_KEY'] + '\n').encode('utf-8'),
-                        password=b'secure server passphrase',
+                        data=(key).encode('utf-8'),
+                        password=pw.encode('utf-8'),
                         backend=default_backend()
                     )
             print("Server's secure key obtained from environment")
