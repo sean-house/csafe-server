@@ -6,7 +6,7 @@ asgiref=3.2.7=py_0
 ca-certificates=2020.6.24=0
 certifi=2020.6.20=py38_0
 cffi=1.14.0=py38hc512035_1
-cryptography=2.9.2=py38ha12b0ac_0
+cryptography==3.2
 django=3.0.3=py_0
 django-bootstrap4=1.1.1=py_0
 gunicorn=20.0.4=py38_0
